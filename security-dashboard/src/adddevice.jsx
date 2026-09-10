@@ -5,12 +5,15 @@ function AddDevice({ setDevices }) {
     const [deviceName, setDeviceName] = useState("");
     const [operatingSystem, setOperatingSystem] = useState("");
 
-    const handleSubmit = (event) => {
+    function handleSubmit(event) {
         event.preventDefault();
 
         const newDevice = {
             name: deviceName,
-            operatingSystem: operatingSystem
+            operatingSystem: operatingSystem,
+            antivirus: true,
+            firewall: true,
+            backup: false
         };
 
         setDevices(previousDevices => [
@@ -20,7 +23,7 @@ function AddDevice({ setDevices }) {
 
         setDeviceName("");
         setOperatingSystem("");
-    };
+    }
 
     return (
         <div>
