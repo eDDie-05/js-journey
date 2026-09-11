@@ -1,4 +1,22 @@
-function DeviceList({ devices }) {
+function DeviceList({ devices, setDevices }) {
+
+    function toggleSecurity(index, property) {
+
+        setDevices(previousDevices =>
+            previousDevices.map((device, deviceIndex) => {
+
+                if (deviceIndex === index) {
+                    return {
+                        ...device,
+                        [property]: !device[property]
+                    };
+                }
+
+                return device;
+            })
+        );
+    }
+
     return (
         <div>
             <h2>Company Devices</h2>
@@ -12,6 +30,7 @@ function DeviceList({ devices }) {
 
                 return (
                     <div key={index}>
+
                         <h3>{device.name}</h3>
 
                         <p>
@@ -19,20 +38,57 @@ function DeviceList({ devices }) {
                         </p>
 
                         <p>
-                            Antivirus: {device.antivirus ? "Protected" : "Not Protected"}
+                            Antivirus:{" "}
+                            {device.antivirus
+                                ? "Protected"
+                                : "Not Protected"}
                         </p>
 
-                        <p>
-                            Firewall: {device.firewall ? "Enabled" : "Disabled"}
-                        </p>
+                        <button
+                            onClick={() =>
+                                toggleSecurity(index, "antivirus")
+                            }
+                        >
+                            Toggle Antivirus
+                        </button>
 
                         <p>
-                            Backup: {device.backup ? "Successful" : "Not Available"}
+                            Firewall:{" "}
+                            {device.firewall
+                                ? "Enabled"
+                                : "Disabled"}
                         </p>
 
+                        <button
+                            onClick={() =>
+                                toggleSecurity(index, "firewall")
+                            }
+                        >
+                            Toggle Firewall
+                        </button>
+
                         <p>
-                            Status: {secure ? "Secure" : "At Risk"}
+                            Backup:{" "}
+                            {device.backup
+                                ? "Successful"
+                                : "Not Available"}
                         </p>
+
+                        <button
+                            onClick={() =>
+                                toggleSecurity(index, "backup")
+                            }
+                        >
+                            Toggle Backup
+                        </button>
+
+                        <p>
+                            Status:{" "}
+                            {secure ? "Secure" : "At Risk"}
+                        </p>
+
+                        <hr />
+
                     </div>
                 );
             })}
