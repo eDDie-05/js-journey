@@ -1,14 +1,9 @@
-function SecuritySettings({
-    securityPolicy,
-    setSecurityPolicy
-}) {
+import { useState } from "react";
 
-    function toggleSetting(setting) {
-        setSecurityPolicy(previousPolicy => ({
-            ...previousPolicy,
-            [setting]: !previousPolicy[setting]
-        }));
-    }
+function SecuritySettings() {
+    const [antivirusRequired, setAntivirusRequired] = useState(true);
+    const [firewallRequired, setFirewallRequired] = useState(true);
+    const [backupRequired, setBackupRequired] = useState(true);
 
     return (
         <div>
@@ -26,12 +21,10 @@ function SecuritySettings({
 
                     <button
                         onClick={() =>
-                            toggleSetting("antivirusRequired")
+                            setAntivirusRequired(!antivirusRequired)
                         }
                     >
-                        {securityPolicy.antivirusRequired
-                            ? "Enabled"
-                            : "Disabled"}
+                        {antivirusRequired ? "Enabled" : "Disabled"}
                     </button>
                 </div>
 
@@ -45,12 +38,10 @@ function SecuritySettings({
 
                     <button
                         onClick={() =>
-                            toggleSetting("firewallRequired")
+                            setFirewallRequired(!firewallRequired)
                         }
                     >
-                        {securityPolicy.firewallRequired
-                            ? "Enabled"
-                            : "Disabled"}
+                        {firewallRequired ? "Enabled" : "Disabled"}
                     </button>
                 </div>
 
@@ -64,12 +55,10 @@ function SecuritySettings({
 
                     <button
                         onClick={() =>
-                            toggleSetting("backupRequired")
+                            setBackupRequired(!backupRequired)
                         }
                     >
-                        {securityPolicy.backupRequired
-                            ? "Enabled"
-                            : "Disabled"}
+                        {backupRequired ? "Enabled" : "Disabled"}
                     </button>
                 </div>
 
