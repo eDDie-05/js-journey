@@ -1,37 +1,24 @@
-function Dashboard({ devices }) {
+return (
+    <div>
+        <h2>Security Dashboard</h2>
 
-    const totalDevices = devices.length;
+        <div className="dashboard">
 
-    const secureDevices = devices.filter(device =>
-        device.antivirus &&
-        device.firewall &&
-        device.backup
-    ).length;
-
-    const atRiskDevices = totalDevices - secureDevices;
-
-    return (
-        <div>
-
-            <h2>Security Dashboard</h2>
-
-            <div>
+            <div className="card">
                 <h3>Total Devices</h3>
                 <p>{totalDevices}</p>
             </div>
 
-            <div>
+            <div className="card">
                 <h3>Secure Devices</h3>
                 <p>{secureDevices}</p>
             </div>
 
-            <div>
+            <div className="card">
                 <h3>At Risk Devices</h3>
                 <p>{atRiskDevices}</p>
             </div>
 
         </div>
-    );
-}
-
-export default Dashboard;
+    </div>
+);

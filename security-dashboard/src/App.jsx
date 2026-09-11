@@ -2,6 +2,7 @@ import { useState } from "react";
 import Dashboard from "./Dashboard";
 import AddDevice from "./AddDevice";
 import DeviceList from "./DeviceList";
+import "./App.css";
 
 function App() {
 
