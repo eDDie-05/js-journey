@@ -12,7 +12,10 @@ app.use(cors());
 app.use(express.json());
 
 
-// TEST
+// ========================================
+// TEST SERVER
+// ========================================
+
 app.get("/", (req, res) => {
 
     res.json({
@@ -22,11 +25,13 @@ app.get("/", (req, res) => {
 });
 
 
-// ==============================
+// ========================================
 // DEVICES
-// ==============================
+// ========================================
 
-// GET DEVICES
+
+// GET ALL DEVICES
+
 app.get("/api/devices", async (req, res) => {
 
     try {
@@ -51,6 +56,7 @@ app.get("/api/devices", async (req, res) => {
 
 
 // ADD DEVICE
+
 app.post("/api/devices", async (req, res) => {
 
     try {
@@ -100,7 +106,9 @@ app.post("/api/devices", async (req, res) => {
         );
 
 
-        res.status(201).json(result.rows[0]);
+        res.status(201).json(
+            result.rows[0]
+        );
 
     } catch (error) {
 
@@ -115,12 +123,14 @@ app.post("/api/devices", async (req, res) => {
 });
 
 
-// EDIT DEVICE
+// UPDATE DEVICE
+
 app.put("/api/devices/:id", async (req, res) => {
 
     try {
 
         const { id } = req.params;
+
 
         const {
             name,
@@ -138,6 +148,7 @@ app.put("/api/devices/:id", async (req, res) => {
         const result = await pool.query(
             `
             UPDATE devices
+
             SET
                 name = $1,
                 operating_system = $2,
@@ -148,7 +159,9 @@ app.put("/api/devices/:id", async (req, res) => {
                 firewall = $7,
                 backup = $8,
                 online = $9
+
             WHERE id = $10
+
             RETURNING *
             `,
             [
@@ -175,7 +188,9 @@ app.put("/api/devices/:id", async (req, res) => {
         }
 
 
-        res.json(result.rows[0]);
+        res.json(
+            result.rows[0]
+        );
 
     } catch (error) {
 
@@ -191,6 +206,7 @@ app.put("/api/devices/:id", async (req, res) => {
 
 
 // DELETE DEVICE
+
 app.delete("/api/devices/:id", async (req, res) => {
 
     try {
@@ -201,7 +217,9 @@ app.delete("/api/devices/:id", async (req, res) => {
         const result = await pool.query(
             `
             DELETE FROM devices
+
             WHERE id = $1
+
             RETURNING *
             `,
             [id]
@@ -218,8 +236,11 @@ app.delete("/api/devices/:id", async (req, res) => {
 
 
         res.json({
+
             message: "Device deleted successfully",
+
             device: result.rows[0]
+
         });
 
     } catch (error) {
@@ -235,11 +256,70 @@ app.delete("/api/devices/:id", async (req, res) => {
 });
 
 
-// ==============================
+// ========================================
 // USERS
-// ==============================
+// ========================================
 
-// GET USERS
+
+// LOGIN
+
+app.post("/api/login", async (req, res) => {
+
+    try {
+
+        const {
+            email,
+            role
+        } = req.body;
+
+
+        const result = await pool.query(
+            `
+            SELECT *
+            FROM users
+
+            WHERE email = $1
+            AND role = $2
+            `,
+            [
+                email,
+                role
+            ]
+        );
+
+
+        if (result.rows.length === 0) {
+
+            return res.status(401).json({
+
+                error: "Invalid login details"
+
+            });
+
+        }
+
+
+        res.json(
+            result.rows[0]
+        );
+
+    } catch (error) {
+
+        console.error("Login error:", error);
+
+        res.status(500).json({
+
+            error: error.message
+
+        });
+
+    }
+
+});
+
+
+// GET ALL USERS
+
 app.get("/api/users", async (req, res) => {
 
     try {
@@ -248,14 +328,18 @@ app.get("/api/users", async (req, res) => {
             "SELECT * FROM users ORDER BY id"
         );
 
-        res.json(result.rows);
+        res.json(
+            result.rows
+        );
 
     } catch (error) {
 
         console.error("Database error:", error);
 
         res.status(500).json({
+
             error: error.message
+
         });
 
     }
@@ -264,6 +348,7 @@ app.get("/api/users", async (req, res) => {
 
 
 // ADD USER
+
 app.post("/api/users", async (req, res) => {
 
     try {
@@ -283,8 +368,10 @@ app.post("/api/users", async (req, res) => {
                 email,
                 role
             )
+
             VALUES
             ($1, $2, $3)
+
             RETURNING *
             `,
             [
@@ -304,7 +391,9 @@ app.post("/api/users", async (req, res) => {
         console.error("Database error:", error);
 
         res.status(500).json({
+
             error: error.message
+
         });
 
     }
@@ -313,6 +402,7 @@ app.post("/api/users", async (req, res) => {
 
 
 // DELETE USER
+
 app.delete("/api/users/:id", async (req, res) => {
 
     try {
@@ -323,7 +413,9 @@ app.delete("/api/users/:id", async (req, res) => {
         const result = await pool.query(
             `
             DELETE FROM users
+
             WHERE id = $1
+
             RETURNING *
             `,
             [id]
@@ -333,15 +425,20 @@ app.delete("/api/users/:id", async (req, res) => {
         if (result.rows.length === 0) {
 
             return res.status(404).json({
+
                 error: "User not found"
+
             });
 
         }
 
 
         res.json({
+
             message: "User deleted successfully",
+
             user: result.rows[0]
+
         });
 
     } catch (error) {
@@ -349,7 +446,9 @@ app.delete("/api/users/:id", async (req, res) => {
         console.error("Database error:", error);
 
         res.status(500).json({
+
             error: error.message
+
         });
 
     }
@@ -357,7 +456,10 @@ app.delete("/api/users/:id", async (req, res) => {
 });
 
 
+// ========================================
 // START SERVER
+// ========================================
+
 app.listen(PORT, () => {
 
     console.log(

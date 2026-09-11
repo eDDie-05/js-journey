@@ -3,78 +3,86 @@ import { useState } from "react";
 function Login({ setCurrentUser }) {
 
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+
+    const [role, setRole] = useState("");
 
     const [error, setError] = useState("");
 
-    function handleLogin(event) {
+    const [loading, setLoading] = useState(false);
+
+
+    async function handleLogin(event) {
 
         event.preventDefault();
 
         setError("");
 
-        /*
-            Demo accounts for learning.
+        setLoading(true);
 
-            Administrator:
-            admin@company.com
-            admin123
 
-            IT Manager:
-            manager@company.com
-            manager123
+        try {
 
-            IT Staff:
-            staff@company.com
-            staff123
-        */
+            const response = await fetch(
+                "http://localhost:5000/api/login",
+                {
+                    method: "POST",
 
-        if (
-            email === "admin@company.com" &&
-            password === "admin123"
-        ) {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
 
-            setCurrentUser({
-                name: "System Administrator",
-                email: email,
-                role: "Administrator"
-            });
+                    body: JSON.stringify({
+                        email: email,
+                        role: role
+                    })
+                }
+            );
 
-            return;
-        }
 
-        if (
-            email === "manager@company.com" &&
-            password === "manager123"
-        ) {
+            const data = await response.json();
 
-            setCurrentUser({
-                name: "IT Manager",
-                email: email,
-                role: "IT Manager"
-            });
 
-            return;
-        }
+            if (!response.ok) {
 
-        if (
-            email === "staff@company.com" &&
-            password === "staff123"
-        ) {
+                throw new Error(
+                    data.error || "Login failed"
+                );
+
+            }
+
 
             setCurrentUser({
-                name: "IT Staff",
-                email: email,
-                role: "IT Staff"
+
+                id: data.id,
+
+                name: data.name,
+
+                email: data.email,
+
+                role: data.role
+
             });
 
-            return;
+
+        } catch (error) {
+
+            console.error(error);
+
+            setError(
+                error.message
+            );
+
+        } finally {
+
+            setLoading(false);
+
         }
 
-        setError("Invalid email or password.");
     }
 
+
     return (
+
         <div className="login-page">
 
             <div className="login-card">
@@ -83,13 +91,16 @@ function Login({ setCurrentUser }) {
                     IT Security
                 </h1>
 
+
                 <h2>
                     Login
                 </h2>
 
+
                 <p>
                     Company Security Management System
                 </p>
+
 
                 <form onSubmit={handleLogin}>
 
@@ -97,40 +108,75 @@ function Login({ setCurrentUser }) {
                         Email
                     </label>
 
+
                     <input
                         type="email"
                         placeholder="Enter your email"
                         value={email}
-                        onChange={(event) =>
-                            setEmail(event.target.value)
+                        onChange={event =>
+                            setEmail(
+                                event.target.value
+                            )
                         }
                         required
                     />
+
 
                     <br />
 
+
                     <label>
-                        Password
+                        Role
                     </label>
 
-                    <input
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(event) =>
-                            setPassword(event.target.value)
+
+                    <select
+                        value={role}
+                        onChange={event =>
+                            setRole(
+                                event.target.value
+                            )
                         }
                         required
-                    />
+                    >
+
+                        <option value="">
+                            Select Role
+                        </option>
+
+                        <option value="Administrator">
+                            Administrator
+                        </option>
+
+                        <option value="IT Manager">
+                            IT Manager
+                        </option>
+
+                        <option value="IT Staff">
+                            IT Staff
+                        </option>
+
+                    </select>
+
 
                     {error && (
+
                         <p className="login-error">
                             ❌ {error}
                         </p>
+
                     )}
 
-                    <button type="submit">
-                        Login
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                    >
+
+                        {loading
+                            ? "Logging in..."
+                            : "Login"}
+
                     </button>
 
                 </form>
@@ -138,7 +184,10 @@ function Login({ setCurrentUser }) {
             </div>
 
         </div>
+
     );
+
 }
+
 
 export default Login;

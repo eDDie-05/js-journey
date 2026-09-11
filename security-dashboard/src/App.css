@@ -358,6 +358,16 @@ body {
     border-radius: 6px;
     font-size: 15px;
 }
+.login-card select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 15px;
+    background: white;
+}
 
 .login-card button {
     width: 100%;
